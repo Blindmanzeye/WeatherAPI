@@ -1,5 +1,6 @@
 import requests
 import os
+import getpass
 from tkinter import *
 from PIL import Image, ImageTk
 
@@ -11,7 +12,7 @@ imagePath = os.curdir + 'weatherImage.png'
 
 #Request
 URL = "https://api.weatherapi.com/v1/current.json?"
-apiKey = "INSERT API KEY HERE"
+apiKey = getpass.getpass(prompt="INSERT API KEY HERE: ")
 city = 'Toronto'
 apiURL = f"{URL}key={apiKey}&q={city}&aqi=no"
 response = requests.get(apiURL)
