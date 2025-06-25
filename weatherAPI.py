@@ -12,7 +12,10 @@ imagePath = os.curdir + 'weatherImage.png'
 
 #Request
 URL = "https://api.weatherapi.com/v1/current.json?"
-apiKey = getpass.getpass(prompt="INSERT API KEY HERE: ")
+apiKey = getpass.getpass(prompt="Insert; api key or full filepath to a txt file containing api key: ")
+if apiKey[0:3] == "C:\\":
+    with open(apiKey, 'r') as f:
+        apiKey = f.read()
 city = 'Toronto'
 apiURL = f"{URL}key={apiKey}&q={city}&aqi=no"
 response = requests.get(apiURL)
@@ -22,6 +25,7 @@ if response.status_code == 200:
     data = response.json()
 else:
     print(f"Error {response.status_code}, - {response.text}")
+    raise ConnectionRefusedError
 
 #secondary global object setup
 locationObj: dict = data["location"]
@@ -88,7 +92,10 @@ def main():
 #os.remove(imagePath) in order to not create duplicate weatherImage.png's. We also put it inside a try except in order to not get a resource leak of the png
 if __name__ == "__main__":
     try:
+        if (os.path.exists(imagePath)):
+            os.remove(imagePath)
         main()
         os.remove(imagePath)
-    except EXCEPTION:
-        os.remove(imagePath)
+    except Exception:
+        if (os.path.exists(imagePath)):
+            os.remove(imagePath)
